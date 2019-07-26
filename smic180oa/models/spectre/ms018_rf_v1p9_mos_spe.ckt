@@ -1,0 +1,843 @@
+//*Spectre Model Format
+simulator lang=spectre  insensitive=yes
+// *
+// *
+// * no part of this file can be released without the consent of smic.
+// *
+// *******************************************************************************************
+// * 0.18um mixed signal 1p6m with mim salicide 1.8v/3.3v rf spice model (for spectre only)  *
+// *******************************************************************************************
+// *
+// * release version    : 1.9
+// *
+// * release date       : 20/03/2008
+// *
+// * simulation tool    : Cadence spectre V6.0
+// *
+// * model type         :
+// *   mosfet           : bsim3v3.2
+// *   junction diode   : spectre level 1
+// *
+// * model and subcircuit name         :
+// *   mosfet           :
+//*        *------------------------------------------*
+//*        |     MOSFET model   |   1.8V   |   3.3V   |
+//*        |==========================================|
+//*        |        NMOS        |  n18_rf  |  n33_rf  |
+//*        *------------------------------------------*
+//*        |       DNWMOS       | dnw18_rf | dnw33_rf |
+//*        *------------------------------------------*
+//*        |        PMOS        |  p18_rf  |  p33_rf  |
+//*        *------------------------------------------*
+//*
+//*        *--------------------------------------------------*
+//*        |     MOSFET subckt  |     1.8V     |    3.3V      |
+//*        |==================================================|
+//*        |        NMOS        |  n18_ckt_rf  |  n33_ckt_rf  |
+//*        *--------------------------------------------------*
+//*        |       DNWMOS       | dnw18_ckt_rf | dnw33_ckt_rf |
+//*        *--------------------------------------------------*
+//*        |        PMOS        |  p18_ckt_rf  |  p33_ckt_rf  |
+//*        *--------------------------------------------------*
+//*
+//*************************
+//* 1.8V RF NMOS Subcircuit
+//*************************
+//* 1=drain, 2=gate, 3=source, 4=bulk
+//* lr=gate length, wr=finger width, nf=finger number
+subckt n18_ckt_rf (1 2 3 4) 
+//* scalable unit parameter
+//* euqivalent circuit saclable parameter
+parameters lr=0.18u wr=10u nf=64
++cgdo_n18     = max((0+dcgdo_n18_rf), 0)
++cgso_n18     = max((0+dcgso_n18_rf), 0)
++rdc_n18       = max((0.1008/(wr*1e6)+0.102*nf), 1e-3)
++rsc_n18       = max((0.1008/(wr*1e6)+0.102*nf), 1e-3)
++Pvag_n18     = -((0.0733*lr*1000000-0.0117)*pwr(wr*1000000,2)+(-1.02*lr*1000000+0.1431)*wr*1000000+(3.3992*lr*1000000-0.2917))*pwr(nf,(0.0508*lr*1000000-0.0097)*pwr(wr*1000000,2)+(-0.3633*lr*1000000+0.1088)*wr*1000000+(-0.24*lr*1000000+0.0165))
++Cj_n18       = max((0+dcj_n18_rf), 0)
++Cjsw_n18     = max((0+dcjsw_n18_rf), 0)
+//*****************************************
+lgate       (2 20)  inductor   l=1p
+rgate       (20 21) resistor   r=max(((724.84*pwr(lr*1e6,2)-356.18*lr*1e6+50.477)+(-72.591*pwr(lr*1e6,2)+34.823*lr*1e6-4.3737)*wr*1e6+(-709.9*pwr(lr*1e6,2)+340.42*lr*1e6-49.734)/(wr*1e6))+((-5161.5*pwr(lr*1e6,2)+1999.2*lr*1e6-33.119)+(531.35*pwr(lr*1e6,2)-224.13*lr*1e6+12.828)*wr*1e6+(3902.6*pwr(lr*1e6,2)-164.08*lr*1e6+386.39)/(wr*1e6))/nf,1e-3)
+cgd_ext     (20 11) capacitor  c=max((((0.6677*pwr(lr*1e6,2)-0.4222*lr*1e6+0.0529)*pwr(wr*1e6,2)+(-5.7464*pwr(lr*1e6,2)+3.8016*lr*1e6-0.1298)*wr*1e6+(3.275*pwr(lr*1e6,2)-2.272*lr*1e6+0.6075))*nf+((-3.5823*pwr(lr*1e6,2)+2.4353*lr*1e6-0.3546)*pwr(wr*1e6,2)+(30.068*pwr(lr*1e6,2)-20.101*lr*1e6+2.8423)*wr*1e6+(-23.613*pwr(lr*1e6,2)+15.794*lr*1e6-1.9974)))*1e-15, 1e-18)
+cgs_ext     (20 31) capacitor  c=max((((0.0651*pwr(lr*1e6,2)-0.0346*lr*1e6+0.004)*pwr(wr*1e6,2)+(-0.701*pwr(lr*1e6,2)+0.3523*lr*1e6-0.0371)*wr*1e6+(1.0807*pwr(lr*1e6,2)-0.5396*lr*1e6+0.061))*pwr(nf,2)+((-0.1448*pwr(lr*1e6,2)-0.1172*lr*1e6+0.0525)*pwr(wr*1e6,2)+(1.1016*pwr(lr*1e6,2)+2.1538*lr*1e6-0.8227)*wr*1e6+(-11.232*pwr(lr*1e6,2)+1.8929*lr*1e6+0.7917))*nf+((-2.1156*pwr(lr*1e6,2)+2.368*lr*1e6-0.5178)*pwr(wr*1e6,2)+(33.552*pwr(lr*1e6,2)-34.449*lr*1e6+6.9433)*wr*1e6+(-54.224*pwr(lr*1e6,2)+52.226*lr*1e6-7.2535)))*1e-15, 1e-18)
+cds_ext     (15 31) capacitor  c=max((((1.2656*pwr(lr*1e6,2)-0.8625*lr*1e6+0.1269)*pwr(wr*1e6,2)+(-14.055*pwr(lr*1e6,2)+8.8032*lr*1e6-0.7362)*wr*1e6+(16.189*pwr(lr*1e6,2)-11.156*lr*1e6+1.6503))*nf+((-6.6026*pwr(lr*1e6,2)+3.9526*lr*1e6-0.3798)*pwr(wr*1e6,2)+(76.57*pwr(lr*1e6,2)-47.009*lr*1e6+4.7061)*wr*1e6+(-74.026*pwr(lr*1e6,2)+47.818*lr*1e6-4.9076)))*1e-15, 1e-18)
+rds         (11 15) resistor   r=0.01
+ldrain      (1 11)  inductor   l=1p
+lsource     (3 31)  inductor   l=1p
+//*****************************************
+djdb (12 11) ndio18_rf area=nf/2*wr*(0.8-0.14)*1e-6  pj=(1+1.2547e-7/wr)*nf*wr
+djsb (32 31) ndio18_rf area=wr*(0.8-0.07)*2*1e-6+(nf/2-1)*wr*(0.8-0.14)*1e-6  pj=(1+1.2547e-7/wr)*nf*wr
+//*****************************************
+rsub1      (41  4)  resistor   r=max(((-173.25*lr*1e6+30.089)*pwr(wr*1e6,2)+(1110*lr*1e6-81.61)*wr*1e6+(-7105.6*lr*1e6+1996.8))*pwr(nf,1.7573*lr*1e6-0.8936), 1e-3)
+rsub2      (41  12) resistor   r=max(((-2.52*lr*1e6+0.4097)*pwr(wr*1e6,2)+(16.422*lr*1e6-2.5923)*wr*1e6+(-21.611*lr*1e6+2.9913))*nf+((43.175*lr*1e6-5.3693)*pwr(wr*1e6,2)+(-232.18*lr*1e6+24.958)*wr*1e6+(399*lr*1e6+31.75)), 1e-3)
+rsub3      (41  32) resistor   r=max(((-318.02*lr*1e6+94.625)*pwr(wr*1e6,2)+(4878.4*lr*1e6-1449.3)*wr*1e6+(-18771*lr*1e6+5701.4))+((1288.3*lr*1e6-389.18)*pwr(wr*1e6,2)+(-18714*lr*1e6+5649.5)*wr*1e6+(59353*lr*1e6-18005))/NF, 1e-3)
+//* --------- ideal mos transistor ----------------------
+main (11 21 31 41) n18_rf l=lr w=wr m=nf ad = 0 as = 0 pd = 0 ps = 0
+// * mos model
+simulator lang=spectre  insensitive=yes
+model n18_rf bsim3v3 {
+1: type=n
+// **************************************************************
+// *               model flag parameters
+// **************************************************************
++lmin = 1.6e-007 lmax = 5.2e-007 wmin = 4.8e-007 
++wmax = 1.002e-005 version = 3.24 mobmod = 1 
++capmod = 3 nqsmod = 0 binunit = 2 
+// **************************************************************
+// *               general model parameters
+// **************************************************************
++tnom = 25 xl = (1.8e-008+DXL_N18_RF) xw = (0+DXW_N18_RF) 
++tox = (3.87e-009+DTOX_N18_RF) toxm = 3.87e-009 wint = -1.4450482e-09 
++lint = 1.5757085e-08 dlc = 8.5e-009 dwc = 4.5e-008 
++hdif = 2e-007 ldif = 7e-008 ll = 2.6352781e-016 
++wl = -2.3664573e-016 lln = 1.1205959 wln = 1.0599999 
++lw = -2.2625584e-016 ww = -3.640969e-014 lwn = 0.92 
++wwn = 0.8768474 lwl = -2.0576711e-022 wwl = -4e-021 
++cgso = (Cgso_n18) cgdo = (Cgdo_n18) xpart = 1 
++rdc =(rdc_n18) rsc=(rsc_n18)
+// **************************************************************
+// *               expert parameters
+// **************************************************************
++vth0 = (0.39+DVTH_N18_RF) wvth0 = -2.9709472e-008 pvth0 = (5e-016+DPVTH0_N18_RF)
++k1 = 0.6801043 wk1 = -2.489684e-008 pk1 = 1.3e-015 
++k2 = -0.049978 k3 = 10 k3b = -3 
++nlx = 7.545103e-008 dvt0 = 1.3 dvt1 = 0.5771635 
++dvt2 = -0.1717554 dvt0w = 0 dvt1w = 0 
++dvt2w = 0 nch = 3.8694e+017 voff = -0.103 
++lvoff = -3.3e-009 nfactor = 1.25 lnfactor = 4.5e-008 
++cdsc = 0 cdscb = 0 cdscd = 0.0001 
++cit = 0 u0 = 0.032953 lu0 = 2.3057663e-011 
++wu0 = -3.1009695e-009 ua = -1.03e-009 lua = 7.734979e-019 
++pua = -1e-024 ub = 2.3667e-018 uc = 1.2e-010 
++puc = 1.5e-024 xj = 1.6e-007 w0 = 5.582015e-007 
++prwg = 0.4 prwb = -0.24 wr = 1 
++rdsw = 55.54972 a0 = 0.83 ags = 0.32 
++a1 = 0 a2 = 0.99 b0 = 6e-008 
++b1 = 0 vsat = 82500 pvsat = -8.3e-010 
++keta = -0.003 lketa = -1.7e-009 dwg = -5.96e-009 
++dwb = 4.5e-009 alpha0 = 1.7753978e-008 beta0 = 11.168394 
++pclm = 1.2 ppclm = 2.9999999e-015 pdiblc1 = 0.025 
++pdiblc2 = 0.0038 ppdiblc2 = 2.7000001e-016 pdiblcb = 0 
++drout = 0.56 
++pvag    = (pvag_n18)
++pscbe1 = 3.45e+008 
++pscbe2 = 1e-006 delta = 0.01 eta0 = 0.028000001 
++etab = -0.027000001 dsub = 0.4 elm = 5 
++alpha1 = 0.1764 lalpha1 = 7.625e-009 
+// **************************************************************
+// *               capacitance parameters
+// **************************************************************
++cf = 0 acde = 0.64 moin = 24 
++noff = 1.2025 cj = (Cj_n18) 
++cjsw = (Cjsw_n18) cgbo=0 
+// **************************************************************
+// *               temperature parameters
+// **************************************************************
++kt1 = -0.2572866 kt1l = -1e-009 kt2 = -0.04 
++ute = -1.55 ua1 = 1.76e-009 lua1 = 6e-018 
++wua1 = -1.1e-016 pua1 = -5e-025 ub1 = -2.4e-018 
++uc1 = -1e-010 luc1 = 1.6999999e-017 puc1 = -3e-024 
++prt = -55 at = 37000 pat = -7.5e-010 
+// **************************************************************
+// *               noise parameters
+// **************************************************************
++noimod = 2 noia = 8.2282E+19 noib = 1.3327E+04 
++noic = -2.4937E-14 em = 1.7767E+07 ef = 0.818 
+}
+// **************************************************************
+model ndio18_rf diode
++is = 3.52e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1e-15 
++n = 1.0233 ns = 1.0233 ik = 1.52e+05 ikp = 4.32e-04 
++bv = 11.0 ibv = 277.78 
++trs = 1.51e-03 eg = 1.16 tnom = 25.0 
++xti = 3.0 
++cjo = 9.68e-04 
++cjsw = 4.18e-10 
++rs = 8.89e-09 
++mj = 0.346 vj = 0.7 mjsw = 0.538 
++vjsw = 1 cta = 0.000842 ctp = 0.000669 
++pta = 0.00147 ptp = 0.000868 tlev = 1 
++tlevc = 1 fc = 0 
+ends n18_ckt_rf
+//***************************
+//* 1.8V RF DNWMOS Subcircuit
+//***************************
+//* 1=drain, 2=gate, 3=source, 4=bulk, 5=DNW
+//* lr=gate length, wr=finger width, nf=finger number, laddr=DNW diode add length, waddr=DNW didoe add width
+subckt dnw18_ckt_rf (1 2 3 4 5) 
+//* scalable unit parameter
+//* euqivalent circuit saclable parameter
+parameters lr=0.18u wr=10u nf=64 laddr=10u waddr=10u
++cgdo_n18     = max((0+dcgdo_n18_rf), 0)
++cgso_n18     = max((0+dcgso_n18_rf), 0)
++rdc_n18       = max((0.1008/(wr*1e6)+0.102*nf), 1e-3)
++rsc_n18       = max((0.1008/(wr*1e6)+0.102*nf), 1e-3)
++Pvag_n18     = -((0.0733*lr*1000000-0.0117)*pwr(wr*1000000,2)+(-1.02*lr*1000000+0.1431)*wr*1000000+(3.3992*lr*1000000-0.2917))*pwr(nf,(0.0508*lr*1000000-0.0097)*pwr(wr*1000000,2)+(-0.3633*lr*1000000+0.1088)*wr*1000000+(-0.24*lr*1000000+0.0165))
++Cj_n18       = max((0+dcj_n18_rf), 0)
++Cjsw_n18     = max((0+dcjsw_n18_rf), 0)
+//*****************************************
+lgate       (2 20)  inductor   l=1p
+rgate       (20 21) resistor   r=max(((724.84*pwr(lr*1e6,2)-356.18*lr*1e6+50.477)+(-72.591*pwr(lr*1e6,2)+34.823*lr*1e6-4.3737)*wr*1e6+(-709.9*pwr(lr*1e6,2)+340.42*lr*1e6-49.734)/(wr*1e6))+((-5161.5*pwr(lr*1e6,2)+1999.2*lr*1e6-33.119)+(531.35*pwr(lr*1e6,2)-224.13*lr*1e6+12.828)*wr*1e6+(3902.6*pwr(lr*1e6,2)-164.08*lr*1e6+386.39)/(wr*1e6))/nf,1e-3)
+cgd_ext     (20 11) capacitor  c=max((((0.6677*pwr(lr*1e6,2)-0.4222*lr*1e6+0.0529)*pwr(wr*1e6,2)+(-5.7464*pwr(lr*1e6,2)+3.8016*lr*1e6-0.1298)*wr*1e6+(3.275*pwr(lr*1e6,2)-2.272*lr*1e6+0.6075))*nf+((-3.5823*pwr(lr*1e6,2)+2.4353*lr*1e6-0.3546)*pwr(wr*1e6,2)+(30.068*pwr(lr*1e6,2)-20.101*lr*1e6+2.8423)*wr*1e6+(-23.613*pwr(lr*1e6,2)+15.794*lr*1e6-1.9974)))*1e-15, 1e-18)
+cgs_ext     (20 31) capacitor  c=max((((0.0651*pwr(lr*1e6,2)-0.0346*lr*1e6+0.004)*pwr(wr*1e6,2)+(-0.701*pwr(lr*1e6,2)+0.3523*lr*1e6-0.0371)*wr*1e6+(1.0807*pwr(lr*1e6,2)-0.5396*lr*1e6+0.061))*pwr(nf,2)+((-0.1448*pwr(lr*1e6,2)-0.1172*lr*1e6+0.0525)*pwr(wr*1e6,2)+(1.1016*pwr(lr*1e6,2)+2.1538*lr*1e6-0.8227)*wr*1e6+(-11.232*pwr(lr*1e6,2)+1.8929*lr*1e6+0.7917))*nf+((-2.1156*pwr(lr*1e6,2)+2.368*lr*1e6-0.5178)*pwr(wr*1e6,2)+(33.552*pwr(lr*1e6,2)-34.449*lr*1e6+6.9433)*wr*1e6+(-54.224*pwr(lr*1e6,2)+52.226*lr*1e6-7.2535)))*1e-15, 1e-18)
+cds_ext     (15 31) capacitor  c=max((((1.2656*pwr(lr*1e6,2)-0.8625*lr*1e6+0.1269)*pwr(wr*1e6,2)+(-14.055*pwr(lr*1e6,2)+8.8032*lr*1e6-0.7362)*wr*1e6+(16.189*pwr(lr*1e6,2)-11.156*lr*1e6+1.6503))*nf+((-6.6026*pwr(lr*1e6,2)+3.9526*lr*1e6-0.3798)*pwr(wr*1e6,2)+(76.57*pwr(lr*1e6,2)-47.009*lr*1e6+4.7061)*wr*1e6+(-74.026*pwr(lr*1e6,2)+47.818*lr*1e6-4.9076)))*1e-15, 1e-18)
+rds         (11 15) resistor   r=0.01
+ldrain      (1 11)  inductor   l=1p
+lsource     (3 31)  inductor   l=1p
+//*****************************************
+djdb (12 11) ndio18_rf area=nf/2*wr*(0.8-0.14)*1e-6  pj=(1+1.2547e-7/wr)*nf*wr
+djsb (32 31) ndio18_rf area=wr*(0.8-0.07)*2*1e-6+(nf/2-1)*wr*(0.8-0.14)*1e-6  pj=(1+1.2547e-7/wr)*nf*wr
+djdnw (4 5) diobpw_rf area=(2*0.8*1e-6+lr*nf+0.8*1e-6*(nf-1)+2*laddr)*(wr+2*waddr) pj=2*(2*0.8*1e-6+lr*nf+0.8*1e-6*(nf-1)+wr+2*(laddr+waddr))
+//*****************************************
+rsub1      (41  4)  resistor   r=max(((-173.25*lr*1e6+30.089)*pwr(wr*1e6,2)+(1110*lr*1e6-81.61)*wr*1e6+(-7105.6*lr*1e6+1996.8))*pwr(nf,1.7573*lr*1e6-0.8936), 1e-3)
+rsub2      (41  12) resistor   r=max(((-2.52*lr*1e6+0.4097)*pwr(wr*1e6,2)+(16.422*lr*1e6-2.5923)*wr*1e6+(-21.611*lr*1e6+2.9913))*nf+((43.175*lr*1e6-5.3693)*pwr(wr*1e6,2)+(-232.18*lr*1e6+24.958)*wr*1e6+(399*lr*1e6+31.75)), 1e-3)
+rsub3      (41  32) resistor   r=max(((-318.02*lr*1e6+94.625)*pwr(wr*1e6,2)+(4878.4*lr*1e6-1449.3)*wr*1e6+(-18771*lr*1e6+5701.4))+((1288.3*lr*1e6-389.18)*pwr(wr*1e6,2)+(-18714*lr*1e6+5649.5)*wr*1e6+(59353*lr*1e6-18005))/NF, 1e-3)
+//* --------- ideal mos transistor ----------------------
+main (11 21 31 41) dnw18_rf l=lr w=wr m=nf ad = 0 as = 0 pd = 0 ps = 0
+// * mos model
+model dnw18_rf bsim3v3 {
+1: type=n
+// **************************************************************
+// *               model flag parameters
+// **************************************************************
++lmin = 1.6e-007 lmax = 5.2e-007 wmin = 4.8e-007 
++wmax = 1.002e-005 version = 3.24 mobmod = 1 
++capmod = 3 nqsmod = 0 binunit = 2 
+// **************************************************************
+// *               general model parameters
+// **************************************************************
++tnom = 25 xl = (1.8e-008+DXL_N18_RF) xw = (0+DXW_N18_RF) 
++tox = (3.87e-009+DTOX_N18_RF) toxm = 3.87e-009 wint = -1.4450482e-09 
++lint = 1.5757085e-08 dlc = 8.5e-009 dwc = 4.5e-008 
++hdif = 2e-007 ldif = 7e-008 ll = 2.6352781e-016 
++wl = -2.3664573e-016 lln = 1.1205959 wln = 1.0599999 
++lw = -2.2625584e-016 ww = -3.640969e-014 lwn = 0.92 
++wwn = 0.8768474 lwl = -2.0576711e-022 wwl = -4e-021 
++cgso = (Cgso_n18) cgdo = (Cgdo_n18) xpart = 1 
++rdc =(rdc_n18) rsc=(rsc_n18)
+// **************************************************************
+// *               expert parameters
+// **************************************************************
++vth0 = (0.39+DVTH_N18_RF) wvth0 = -2.9709472e-008 pvth0 = (5e-016+DPVTH0_N18_RF)
++k1 = 0.6801043 wk1 = -2.489684e-008 pk1 = 1.3e-015 
++k2 = -0.049978 k3 = 10 k3b = -3 
++nlx = 7.545103e-008 dvt0 = 1.3 dvt1 = 0.5771635 
++dvt2 = -0.1717554 dvt0w = 0 dvt1w = 0 
++dvt2w = 0 nch = 3.8694e+017 voff = -0.103 
++lvoff = -3.3e-009 nfactor = 1.25 lnfactor = 4.5e-008 
++cdsc = 0 cdscb = 0 cdscd = 0.0001 
++cit = 0 u0 = 0.032953 lu0 = 2.3057663e-011 
++wu0 = -3.1009695e-009 ua = -1.03e-009 lua = 7.734979e-019 
++pua = -1e-024 ub = 2.3667e-018 uc = 1.2e-010 
++puc = 1.5e-024 xj = 1.6e-007 w0 = 5.582015e-007 
++prwg = 0.4 prwb = -0.24 wr = 1 
++rdsw = 55.54972 a0 = 0.83 ags = 0.32 
++a1 = 0 a2 = 0.99 b0 = 6e-008 
++b1 = 0 vsat = 82500 pvsat = -8.3e-010 
++keta = -0.003 lketa = -1.7e-009 dwg = -5.96e-009 
++dwb = 4.5e-009 alpha0 = 1.7753978e-008 beta0 = 11.168394 
++pclm = 1.2 ppclm = 2.9999999e-015 pdiblc1 = 0.025 
++pdiblc2 = 0.0038 ppdiblc2 = 2.7000001e-016 pdiblcb = 0 
++drout = 0.56 
++pvag    = (pvag_n18)
++pscbe1 = 3.45e+008 
++pscbe2 = 1e-006 delta = 0.01 eta0 = 0.028000001 
++etab = -0.027000001 dsub = 0.4 elm = 5 
++alpha1 = 0.1764 lalpha1 = 7.625e-009 
+// **************************************************************
+// *               capacitance parameters
+// **************************************************************
++cf = 0 acde = 0.64 moin = 24 
++noff = 1.2025 cj = (Cj_n18) 
++cjsw = (Cjsw_n18)  cgbo=0
+// **************************************************************
+// *               temperature parameters
+// **************************************************************
++kt1 = -0.2572866 kt1l = -1e-009 kt2 = -0.04 
++ute = -1.55 ua1 = 1.76e-009 lua1 = 6e-018 
++wua1 = -1.1e-016 pua1 = -5e-025 ub1 = -2.4e-018 
++uc1 = -1e-010 luc1 = 1.6999999e-017 puc1 = -3e-024 
++prt = -55 at = 37000 pat = -7.5e-010 
+// **************************************************************
+// *               noise parameters
+// **************************************************************
++noimod = 2 noia = 8.2282E+19 noib = 1.3327E+04 
++noic = -2.4937E-14 em = 1.7767E+07 ef = 0.818 
+}
+// **************************************************************
+model ndio18_rf diode
++is = 3.52e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1e-15 
++n = 1.0233 ns = 1.0233 ik = 1.52e+05 ikp =4.32e-04  
++bv = 11.0 ibv = 277.78 
++trs = 1.51e-03 eg = 1.16 tnom = 25.0 
++xti = 3.0 
++cjo = 9.68e-04 
++cjsw = 4.18e-10 
++rs = 8.89e-09 
++mj = 0.346 vj = 0.7 mjsw = 0.538 
++vjsw = 1 cta = 0.000842 ctp = 0.000669 
++pta = 0.00147 ptp = 0.000868 tlev = 1 
++tlevc = 1 fc = 0 
+// * DNW junction diode model
+model diobpw_rf diode
++level = 1 is = 1.50e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1.00e-15 
++n = 1.0213 ns = 1.0213 rs = 2.51e-08 ik = 2.40e+05 ikp = 1.60E-03 
++bv = 15.0 ibv = 1.04e+02 
++trs = 1.77e-03 cta = 0.0012 ctp = 0.00107 
++eg = 1.16 tnom = 25.0 pta = 0.0019 
++ptp = 0.00193 xti = 3.0 cjo = 0.000536 
++mj = 0.343 vj = 0.693 cjsw = 3.22e-10 
++mjsw = 0.361 vjsw = 0.715 tlev = 1 
++tlevc = 1 area = 9.6e-9 perim = 4e-4 
++fc = 0 
+ends dnw18_ckt_rf
+//*************************
+//* 1.8V RF PMOS Subcircuit
+//*************************
+//* 1=drain, 2=gate, 3=source, 4=bulk
+//* lr=gate length, wr=finger width, nf=finger number
+subckt p18_ckt_rf (1 2 3 4) 
+//* scalable unit parameter
+//* euqivalent circuit saclable parameter
+parameters lr=0.18u wr=10u nf=2
++cgdo_p18_rf     = max((0+dcgdo_p18_rf), 0)
++cgso_p18_rf     = max((0+dcgso_p18_rf), 0)
++cj_p18_rf     = max((0+dcj_p18_rf), 0)
++cjsw_p18_rf     = max((0+dcjsw_p18_rf), 0)
++rdc_p18_rf       = max((32.428*exp(-0.3464*wr*1e6))*pwr(nf, 0.1502*exp(0.1353*wr*1e6)), 1e-3)
++rsc_p18_rf       =  max((32.428*exp(-0.3464*wr*1e6))*pwr(nf, 0.1502*exp(0.1353*wr*1e6)), 1e-3)
+//*****************************************
+lgate       (2 20)  inductor   l=1p
+rgate       (20 21) resistor   r=max((((17236*lr*lr*1e6*1e6+181.46*lr*1e6+149.85)*pwr(wr*1e6,(1.3797*lr*lr*1e6*1e6-2.4198*lr*1e6-0.48)))*pwr(nf,(0.5573*lr*lr*1e6*1e6-0.1633*lr*1e6+0.1623)*log(wr*1e6)+(-1.0151*lr*lr*1e6*1e6-0.1544*lr*1e6-0.981))), 1e-3)
+cgd_ext     (20 11) capacitor  c=max((((5.375E-17*lr*lr*1e6*1e6-1.08E-17*lr*1e6+4.4E-16)*wr*1e6+(-3.9974E-16*lr*lr*1e6*1e6+6.9454E-16*lr*1e6+(1.3021E-16*lr*lr*1e6*1e6+2.0833E-17*lr*1e6+9.2031E-17)))*nf+(1.7802E-17*wr*wr*1e6*1e6-3.4928E-16*wr*1e6+6.1859E-16)), 1e-18)
+cgs_ext     (20 31) capacitor  c=max((((6.2506e-17*lr*lr*1e6*1e6-2.9036e-17*lr*1e6+3.9433e-18)*exp((-2.0989*lr*lr*1e6*1e6+8.7703e-1*lr*1e6+2.6579e-1)*wr*1e6))*nf*nf+((4.4788e-16*lr*lr*1e6*1e6-4.0771e-16*lr*1e6-1.0686e-17)*wr*1e6+(-2.3431e-15*lr*lr*1e6*1e6+2.2217e-15*lr*1e6+3.6221e-16))*nf+((6.7052e-15*lr*lr*1e6*1e6-6.2642e-15*lr*1e6+2.7578e-16)*log(wr*1e6)+(-1.2255e-14*lr*lr*1e6*1e6+1.562e-14*lr*1e6-1.487e-16))), 1e-18)
+cds_ext     (15 31) capacitor  c=max(((4.1455e-16*lr*lr*1e6*1e6-3.5118e-16*lr*1e6+6.4154e-17)*wr*wr*1e6*1e6+(-9.4276e-16*lr*lr*1e6*1e6+8.0336e-16*lr*1e6+1.1269e-16)*wr*1e6+(-4.1859e-16*lr*lr*1e6*1e6+9.8925e-17*lr*1e6+2.1732e-16))*nf+((-4.9953e-17*lr*1e6*lr*1e6+1.011e-16*lr*1e6+5.9634e-17)*wr*1e6+(-1.7041e-15*lr*lr*1e6*1e6+1.571e-15*lr*1e6+4.9801e-16)), 1e-18)
+rds         (11 15) resistor   r=0.01
+ldrain      (1 11)  inductor   l=1p
+lsource     (3 31)  inductor   l=1p
+//*****************************************
+djdb (11 12) pdio18_rf area=(nf/2*(0.8-2*0.07)*wr)*1e-6  pj=(1+1.287e-7/wr)*(nf*wr)
+djsb (31 32) pdio18_rf area=((nf/2-1)*(0.8-2*0.07)*wr+(0.8-0.07)*wr*2)*1e-6  pj=(1+1.287e-7/wr)*(nf*wr)
+//*****************************************
+rsub1      (41  4)  resistor   r=max((0.0023528*nf*nf-0.56425*nf+61.816), 1e-3)
+rsub2      (41  12) resistor   r=max((-11.603*log(nf)+72.058), 1e-3)
+rsub3      (41  32) resistor   r=max((-1065.3*log(nf)+5768.9), 1e-3)
+//* --------- ideal mos transistor ----------------------
+main (11 21 31 41) p18_rf l=lr w=wr m=nf ad = 0 as = 0 pd = 0 ps = 0
+// * mos model
+model p18_rf bsim3v3 {
+1: type=p
+// * general parameters
+// *
+**************************************************************
+*               MODEL FLAG PARAMETERS 
+**************************************************************
++lmin    = 1.6e-007        lmax    = 1.2e-006        wmin    = 4.8e-007        wmax    = 1.002e-005    
++version = 3.24             mobmod  = 1               capmod  = 3               nqsmod  = 0             
++binunit = 2             
+**************************************************************
+*               GENERAL MODEL PARAMETERS 
+**************************************************************
++tref    = 25              xl      = -5.7e-009+dxl_p18_rf       xw      = 0+dxw_p18_rf          tox     = 3.74e-009+dtox_p18_rf      
++toxm    = 3.74e-009       wint    = -5e-009          lint    = 1.38e-008          dlc     = -1.5e-009     
++hdif    = 2e-007          ldif    = 7e-008          ll      = 3.4e-015        wl      = 3.59042e-015  
++lln     = 1               wln     = 1.045           lw      = -3.36e-016      ww      = -1.8999999e-015
++lwn     = 1               wwn     = 1               lwl     = 0               wwl     = -1.1205e-021  
++cgso    = cgso_p18_rf               cgdo    = cgdo_p18_rf               xpart   = 1             
+**************************************************************
+*               EXPERT PARAMETERS 
+**************************************************************
+**************************************************************
++vth0    = -0.41+dvth_p18_rf            wvth0   = 1.267542e-008   pvth0   = -1.25e-015+dpvth0_p18_rf      k1      = 0.587239      
++lk1     = 3.553211e-009   k2      = 0.007090686     k3      = 2.5999999       k3b     = 2.4862001     
++nlx     = 9e-008          dvt0    = 0.7194931       dvt1    = 0.2467441       dvt2    = 0.07808968    
++dvt0w   = 0               dvt1w   = 800000          dvt2w   = 0               nch     = 5.5e+017      
++voff    = -0.095          lvoff   = -1.7e-009       wvoff   = -1.9999999e-009  pvoff   = -1e-016       
++nfactor = 0.9             lnfactor= 1e-007          pnfactor= -5e-015         cdsc    = 0             
++cdscb   = 0               cdscd   = 0               cit     = 0               u0      = 0.008661      
++lu0     = -2e-011         wu0     = 1.381535e-010   ua      = 2.85e-010       lua     = 5.5e-018      
++pua     = -2e-024         ub      = 1e-018          uc      = -4.77e-011      wuc     = 3.1668e-017   
++puc     = -2.5e-024       ngate   = 3.168e+020      xj      = 1.7000001e-007  w0      = 0             
++prwg    = 0               prwb    = -0.4            wr      = 1               rdsw    = 455           
++a0      = 1               ags     = 0.2             a1      = 0               a2      = 0.99          
++b0      = 6.3e-008        b1      = 0               vsat    = 100000          keta    = 0.02          
++lketa   = -8.5e-009       pketa   = 5e-016          dwg     = -1.736197e-008  dwb     = 2e-008        
++alpha0  = 7e-008          beta0   = 22.8424         lbeta0  = -7.5e-008       pclm    = 0.7           
++pdiblc1 = 0               pdiblc2 = 0.007           pdiblcb = 0               drout   = 0.56          
++pvag    = 0               pscbe1  = 4e+008          pscbe2  = 1e-007          delta   = 0.01          
++eta0    = 0.04            etab    = -0.025          dsub    = 0.56            elm     = 5             
++alpha1  = 7.04917       
+**************************************************************
+*               CAPACITANCE PARAMETERS 
+**************************************************************
++cf      = 0            cgbo=0     acde    = 0.8505076       moin    = 14.95341        noff    = 1.431824      
+**************************************************************
+*               TEMPERATURE PARAMETERS 
+**************************************************************
++kt1     = -0.2577007      kt1l    = -8e-009         kt2     = -0.0309799      lkt2    = -3e-009       
++pkt2    = -6.533175e-016  ute     = -1.2703574      ua1     = 5.38663e-010    wua1    = 1.1e-016      
++pua1    = -2.3700001e-024  ub1     = -2.0709999e-018  uc1     = 2.0609721e-011  prt     = 90            
++at      = 10000           pat     = -1e-009       
+**************************************************************
+*               NOISE PARAMETERS 
+**************************************************************
++noimod = 2 noia = 3.3617E+18 noib = 1.9536E+05 
++noic = 5.2658E-12 em = 6.2548E+07 ef = 1.1307E+00      
+**************************************************************
+*               DIODE PARAMETERS 
+**************************************************************
++rsh     = 7.83        cj      = (cj_p18_rf)        
++cjsw    = (cjsw_p18_rf)    rd      = 0               rdc = rdc_p18_rf            rs      = 0        rsc  = rsc_p18_rf        
+} 
+// * junction diode model
+model pdio18_rf diode
++level = 1 is = 1.66e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1e-15 
++n = 1.0135 ns = 1.0135 rs = 8.77e-09 ik = 4.03e+05 ikp = 2.43E-03 
++bv = 11.0 ibv = 277.78 
++trs = 1.78e-03 eg = 1.16 tnom = 25.0 
++xti = 3.0 cjo = 0.00107 mj = 0.415 
++vj = 0.817 cjsw =  5.07e-10 mjsw = 0.489 
++vjsw = 0.95 cta = 0.000876 ctp = 0.000745 
++pta = 0.00153 ptp = 0.00117 tlev = 1 
++tlevc = 1 fc = 0 
+ends p18_ckt_rf
+//*************************
+//* 3.3V RF NMOS Subcircuit
+//*************************
+//* 1=drain, 2=gate, 3=source, 4=bulk
+//* lr=gate length, wr=finger width, nf=finger number
+subckt n33_ckt_rf (1 2 3 4) 
+//* scalable unit parameter
+//* euqivalent circuit saclable parameter
+parameters lr=0.35u wr=10u nf=2
++rdc_n33_rf      = max((86.7923*exp(-0.1713*wr*1e6)),1e-3)
++rsc_n33_rf      = max((86.7923*exp(-0.1713*wr*1e6)),1e-3)
++cgdo_n33_rf     = max((0+dcgdo_n33_rf),0)
++cgso_n33_rf     = max((0+dcgso_n33_rf),0)
++cj_n33_rf     = max((0+dcj_n33_rf), 0)
++cjsw_n33_rf     = max((0+dcjsw_n33_rf), 0)
+//*****************************************
+lgate       (2 20)  inductor   l=1p
+rgate       (20 21) resistor   r=max((((337.44*lr*lr*1e6*1e6-636.15*lr*1e6+1247.8)*pwr(wr*1e6,(0.0345*lr*lr*1e6*1e6-0.0673*lr*1e6-0.8144)))*pwr(nf,(0.01549*lr*lr*1e6*1e6-0.02983*lr*1e6+0.10754)*log(wr*1e6)+(-0.01723*lr*lr*1e6*1e6+0.03465*lr*1e6-0.95262))),1e-3)
+cgd_ext     (20 11) capacitor  c=max((((-1.019487e-18*lr*lr*1e6*1e6+2.093231E-18*lr*1e6-5.621744E-18)*wr*wr*1e6*1e6+(-7.0297E-17*lr*lr*1e6*1e6+1.4369E-16*lr*1e6+3.8644E-16)*wr*1e6+(9.4974E-18*lr*lr*1e6*1e6+3.9394E-17*lr*1e6+2.3454E-16))*nf+((-4.8156E-18*lr*lr*1e6*1e6+1.1596E-16*lr*1e6-2.1673E-17)*wr*wr*1e6*1e6+(4.816E-16*lr*lr*1e6*1e6-1.2046E-15*lr*1e6+8.1E-19)*wr*1e6+(-1.5056E-16*lr*lr*1e6*1e6+7.2245E-16*lr*1e6+2.1267E-16))),1e-18)
+cgs_ext     (20 31) capacitor  c=max(((-1.7423e-17*lr*lr*1e6*1e6+3.3616E-17*lr*1e6+7.4972E-19)*wr*wr*1e6*1e6+(-8.3169E-17*lr*lr*1e6*1e6+2.8529E-16*lr*1e6+2.5325E-16)*wr*1e6+(-5.1487E-16*lr*lr*1e6*1e6+9.9831E-16*lr*1e6+3.2256E-16))*nf+((-2.5956E-17*lr*lr*1e6*1e6-2.5684E-17*lr*1e6+1.5362E-16)*wr*wr*1e6*1e6+(-3.6262E-15*lr*lr*1e6*1e6+6.3722E-15*lr*1e6-3.7861E-15)*wr*1e6+(8.4615E-15*lr*lr*1e6*1e6-1.4192E-14*lr*1e6+7.9308E-15)),1e-18)
+cds_ext     (15 31) capacitor  c=max(((-8.3173e-17*lr*lr*1e6*1e6+1.4664E-16*lr*1e6-3.1474E-17)*wr*wr*1e6*1e6+(4.9488E-16*lr*lr*1e6*1e6-8.6038E-16*lr*1e6+4.8447E-16)*wr*1e6+(-6.5021E-16*lr*lr*1e6*1e6+1.1567E-15*lr*1e6-3.068E-16))*nf+((-3.2841E-18*lr*lr*1e6*1e6+1.3358E-17*lr*1e6+1.7142E-17)*wr*wr*1e6*1e6+(5.3662E-17*lr*1e6*lr*1e6-2.4561E-16*lr*1e6-3.1695E-16)*wr*1e6+(-3.2421E-16*lr*lr*1e6*1e6+1.5991E-16*lr*1e6+3.211E-16)),1e-18)
+rds         (11 15) resistor   r=1m
+ldrain      (1 11)  inductor   l=1p
+lsource     (3 31)  inductor   l=1p
+//*****************************************
+djdb (12 11) ndio33_rf area=(nf/2*wr*(0.8-2*0.065))*1e-6  pj=(1+1.7977e-7/wr)*nf*wr
+djsb (32 31) ndio33_rf area=(wr*(0.8-0.065)*2+(nf/2-1)*wr*(0.8-2*0.065))*1e-6  pj=(1+1.7977e-7/wr)*nf*wr
+//*****************************************
+rsub1      (41  4)  resistor   r=max(((0.0011*pwr(lr*1e6,0.0699)*log(wr*1e6))+(0.0064*pwr(lr*1e6,-0.1022)))*nf*nf+((-0.0197*log(lr*1e6)-0.0762)*wr*1e6+(0.2539*log(lr*1e6)-1.3244))*nf+((9.2323*lr*lr*1e6*1e6-16.353*lr*1e6+16.212)*wr*1e6+(103.21*lr*lr*1e6*1e6-183.88*lr*1e6+170.1)),1e-3)
+rsub2      (41  12) resistor   r=max((0.0226*nf*nf-5.6376*nf+401.39),1e-3)
+rsub3      (41  32) resistor   r=max((3062.5*pwr(nf,-0.8254)),1e-3)
+//* --------- ideal mos transistor ----------------------
+main (11 21 31 41) n33_rf l=lr w=wr m=nf ad = 0 as = 0 pd = 0 ps = 0
+// * mos model
+model n33_rf bsim3v3 {
+1: type=n
+// *
+// * general parameters
+// *
++lmin = 3.3e-7 lmax = 1.2e-6 wmin = 4.8e-7 
++wmax = 1.002e-5 tnom = 25.0 version = 3.24 
++tox = 6.65e-09+dtox_n33_rf toxm = 6.65e-09 xj = 1.6000000e-07 
++nch = 4.3441000e+17 lln = 1.0625758 lwn = 1.0101005 
++wln = 0.9810000 wwn = 0.9060000 lint = 6.3891300e-08 
++ll = -2.3305548e-15 lw = -2.4634918e-15 lwl = 2.6243002e-24 
++wint = 3.5850000e-08 wl = -1.8902563e-15 ww = -1.3000000e-14 
++wwl = -1.3027796e-20 mobmod = 1 binunit = 2 
++xl = 1e-8+dxl_n33_rf xw = 0.00+dxw_n33_rf dwg = -3.9100000e-09 
++dwb = 3.2000000e-09 
+// * diode parameters
++dskip = no ldif = 6.50e-08 hdif = 2.05e-07 
++rsh = 7.08 rd = 0 rs = 0 
++rsc = rsc_n33_rf  rdc = rdc_n33_rf 
+// *
+// * threshold voltage parameters
+// *
++vth0 = 0.695+dvth_n33_rf lvth0 = 4.0100000e-10 wvth0 = 1.0200000e-08 
++pvth0 = 8.0000000e-16+dpvth0_n33_rf k1 = 0.8451000 lk1 = 5.8182560e-10 
++wk1 = -6.2456240e-09 pk1 = 1.9938927e-15 k2 = 4.4575000e-02 
++k3 = -3.8500000 dvt0 = 9.4991400 ldvt0 = 8.0839730e-09 
++dvt1 = 0.6300000 ldvt1 = 5.5000000e-08 dvt2 = -0.1450000 
++dvt0w = 0.00 dvt1w = 0.1057000 dvt2w = 0.00 
++nlx = 2.0274594e-07 lnlx = -2.8608589e-14 w0 = 0.00 
++k3b = 0.5669292 ngate = 2.6812141e+21 
+// *
+// * mobility parameters
+// *
++vsat = 8.5000000e+04 lvsat = -1.7300000e-03 pvsat = 1.2000000e-10 
++ua = -8.6001130e-10 ub = 2.3000001e-18 uc = 1.3100000e-10 
++puc = 5.0000000e-25 rdsw = 2.4208382e+02 prwb = -8.5000000e-02 
++prwg = 3.8000000e-02 wr = 1.0000000 u0 = 3.5000000e-02 
++lu0 = 5.0000000e-10 a0 = 1.0200000 la0 = -1.2000000e-07 
++keta = 0.00 lketa = -1.4000000e-08 wketa = -1.9999999e-09 
++pketa = 1.0000000e-15 a1 = 0.00 a2 = 0.9900000 
++ags = 0.1700000 b0 = 1.0000000e-08 b1 = 0.00 
+// *
+// * subthreshold current parameters
+// *
++voff = -0.1200000 nfactor = 1.1000000 lnfactor = 4.0000000e-08 
++pnfactor = -1.4000000e-14 cit = 1.0000000e-04 cdsc = 5.0000000e-04 
++cdscb = 0.00 cdscd = 0.00 eta0 = 4.0000000e-02 
++peta0 = 3.0000001e-16 etab = -0.1000000 dsub = 0.6000000 
+// *
+// * rout parameters
+// *
++pclm = 0.8000000 lpclm = 5.0000000e-08 ppclm = 8.0000000e-15 
++pdiblc1 = 9.0000000e-02 pdiblc2 = 1.6000000e-03 ppdiblc2 = -7.0000000e-17 
++pdiblcb = 0.00 drout = 0.5987002 pscbe1 = 3.4000000e+08 
++lpscbe1 = 13.0000000 pscbe2 = 3.8000000e-06 pvag = 0.00 
++delta = 1.0000000e-02 alpha0 = -4.4760000e-08 alpha1 = 0.8998877 
++beta0 = 18.8771250 lbeta0 = -5.7118000e-07 
+// *
+// * temperature effects parameters
+// *
++kt1 = -0.3250000 pkt1 = -2.3708420e-15 kt2 = -3.6844640e-02 
++at = 2.2000000e+04 ute = -1.4100000 ua1 = 2.0599999e-09 
++wua1 = -1.2600000e-16 pua1 = -1.0000000e-24 ub1 = -2.5000000e-18 
++wub1 = 1.1000000e-25 uc1 = -1.1000000e-10 luc1 = 1.6999999e-17 
++kt1l = -5.0000000e-09 prt = 40.0000000 
+// *
+// *
+// * capacitance parameters
+// *
++cj = cj_n33_rf  mj = 0.321 pb = 0.708 
++cjsw = cjsw_n33_rf  mjsw = 0.447 pbsw = 1 
++cjswg = 0 mjswg = 0.447 pbswg = 1 
++tpb = 0.00166 tpbsw = 0.00162 tpbswg = 0.00162 
++tcj = 0.000897 tcjsw = 0.000695 tcjswg = 0.000695 
++js = 3.65e-07 jsw = 3.0e-13 n = 1.04 
++xti = 3.9 nqsmod = 0 elm = 5 
++cgdo = cgdo_n33_rf cgso = cgso_n33_rf  cgbo = 0 tlevc = 1 
++capmod = 3 xpart = 1 cf = 0.00 
++acde = 0.45 moin = 24 noff = 2.3177 
++dlc = 6.50e-08 
+// *
+// * noise parameters
+// *
++noimod = 2 noia = 1.5500E+20 noib = 7.1866E+04 
++noic = 1.4952E-13 em = 3.2163E+07 ef = 9.9600E-01 
+// *
+}
+// * junction diode model
+model ndio33_rf diode
++is = 3.65e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1e-15 
++n = 1.0203 ns = 1.0203 rs = 8.84e-09 ik = 1.33e+05 ikp = 2.78e+5 
++bv = 11.0 ibv = 277.78 
++trs = 1.07e-03 eg = 1.16 tnom = 25.0 
++xti = 3.0 cjo = 0.000845  mj = 0.321 
++vj = 0.708 cjsw = 3.41e-10  mjsw = 0.447 
++vjsw = 1 cta = 0.000897 ctp = 0.000695 
++pta = 0.00166 ptp = 0.00162 tlev = 1 
++tlevc = 1 fc = 0 
+ends n33_ckt_rf
+//***************************
+//* 3.3V RF DNWMOS Subcircuit
+//***************************
+//* 1=drain, 2=gate, 3=source, 4=bulk, 5=DNW
+//* lr=gate length, wr=finger width, nf=finger number, laddr=DNW diode add length, waddr=DNW diode add width
+subckt dnw33_ckt_rf (1 2 3 4 5) 
+//* scalable unit parameter
+//* euqivalent circuit saclable parameter
+parameters lr=0.35u wr=10u nf=2 laddr=10u waddr=10u
++rdc_n33_rf      = max((86.7923*exp(-0.1713*wr*1e6)),1e-3)
++rsc_n33_rf      = max((86.7923*exp(-0.1713*wr*1e6)),1e-3)
++cgdo_n33_rf     = max((0+dcgdo_n33_rf),0)
++cgso_n33_rf     = max((0+dcgso_n33_rf),0)
++cj_n33_rf     = max((0+dcj_n33_rf), 0)
++cjsw_n33_rf     = max((0+dcjsw_n33_rf), 0)
+//*****************************************
+lgate       (2 20)  inductor   l=1p
+rgate       (20 21) resistor   r=max((((337.44*lr*lr*1e6*1e6-636.15*lr*1e6+1247.8)*pwr(wr*1e6,(0.0345*lr*lr*1e6*1e6-0.0673*lr*1e6-0.8144)))*pwr(nf,(0.01549*lr*lr*1e6*1e6-0.02983*lr*1e6+0.10754)*log(wr*1e6)+(-0.01723*lr*lr*1e6*1e6+0.03465*lr*1e6-0.95262))),1e-3)
+cgd_ext     (20 11) capacitor  c=max((((-1.019487e-18*lr*lr*1e6*1e6+2.093231E-18*lr*1e6-5.621744E-18)*wr*wr*1e6*1e6+(-7.0297E-17*lr*lr*1e6*1e6+1.4369E-16*lr*1e6+3.8644E-16)*wr*1e6+(9.4974E-18*lr*lr*1e6*1e6+3.9394E-17*lr*1e6+2.3454E-16))*nf+((-4.8156E-18*lr*lr*1e6*1e6+1.1596E-16*lr*1e6-2.1673E-17)*wr*wr*1e6*1e6+(4.816E-16*lr*lr*1e6*1e6-1.2046E-15*lr*1e6+8.1E-19)*wr*1e6+(-1.5056E-16*lr*lr*1e6*1e6+7.2245E-16*lr*1e6+2.1267E-16))),1e-18)
+cgs_ext     (20 31) capacitor  c=max(((-1.7423e-17*lr*lr*1e6*1e6+3.3616E-17*lr*1e6+7.4972E-19)*wr*wr*1e6*1e6+(-8.3169E-17*lr*lr*1e6*1e6+2.8529E-16*lr*1e6+2.5325E-16)*wr*1e6+(-5.1487E-16*lr*lr*1e6*1e6+9.9831E-16*lr*1e6+3.2256E-16))*nf+((-2.5956E-17*lr*lr*1e6*1e6-2.5684E-17*lr*1e6+1.5362E-16)*wr*wr*1e6*1e6+(-3.6262E-15*lr*lr*1e6*1e6+6.3722E-15*lr*1e6-3.7861E-15)*wr*1e6+(8.4615E-15*lr*lr*1e6*1e6-1.4192E-14*lr*1e6+7.9308E-15)),1e-18)
+cds_ext     (15 31) capacitor  c=max(((-8.3173e-17*lr*lr*1e6*1e6+1.4664E-16*lr*1e6-3.1474E-17)*wr*wr*1e6*1e6+(4.9488E-16*lr*lr*1e6*1e6-8.6038E-16*lr*1e6+4.8447E-16)*wr*1e6+(-6.5021E-16*lr*lr*1e6*1e6+1.1567E-15*lr*1e6-3.068E-16))*nf+((-3.2841E-18*lr*lr*1e6*1e6+1.3358E-17*lr*1e6+1.7142E-17)*wr*wr*1e6*1e6+(5.3662E-17*lr*1e6*lr*1e6-2.4561E-16*lr*1e6-3.1695E-16)*wr*1e6+(-3.2421E-16*lr*lr*1e6*1e6+1.5991E-16*lr*1e6+3.211E-16)),1e-18)
+rds         (11 15) resistor   r=1m
+ldrain      (1 11)  inductor   l=1p
+lsource     (3 31)  inductor   l=1p
+//*****************************************
+djdb (12 11) ndio33_rf area=(nf/2*wr*(0.8-2*0.065))*1e-6  pj=(1+1.7977e-7/wr)*nf*wr
+djsb (32 31) ndio33_rf area=(wr*(0.8-0.065)*2+(nf/2-1)*wr*(0.8-2*0.065))*1e-6  pj=(1+1.7977e-7/wr)*nf*wr
+djdnw (4 5) diobpw_rf area=(2*0.8*1e-6+lr*nf+0.8*1e-6*(nf-1)+2*laddr)*(wr+2*waddr) pj=2*(2*0.8*1e-6+lr*nf+0.8*1e-6*(nf-1)+wr+2*(laddr+waddr))
+//*****************************************
+rsub1      (41  4)  resistor   r=max(((0.0011*pwr(lr*1e6,0.0699)*log(wr*1e6))+(0.0064*pwr(lr*1e6,-0.1022)))*nf*nf+((-0.0197*log(lr*1e6)-0.0762)*wr*1e6+(0.2539*log(lr*1e6)-1.3244))*nf+((9.2323*lr*lr*1e6*1e6-16.353*lr*1e6+16.212)*wr*1e6+(103.21*lr*lr*1e6*1e6-183.88*lr*1e6+170.1)),1e-3)
+rsub2      (41  12) resistor   r=max((0.0226*nf*nf-5.6376*nf+401.39),1e-3)
+rsub3      (41  32) resistor   r=max((3062.5*pwr(nf,-0.8254)),1e-3)
+//* --------- ideal mos transistor ----------------------
+main (11 21 31 41) dnw33_rf l=lr w=wr m=nf ad = 0 as = 0 pd = 0 ps = 0
+// * mos model
+model dnw33_rf bsim3v3 {
+1: type=n
+// *
+// * general parameters
+// *
++lmin = 3.3e-7 lmax = 5.2e-7 wmin = 4.8e-7 
++wmax = 1.002e-5 tnom = 25.0 version = 3.24 
++tox = 6.65e-09+dtox_n33_rf toxm = 6.65e-09 xj = 1.6000000e-07 
++nch = 4.3441000e+17 lln = 1.0625758 lwn = 1.0101005 
++wln = 0.9810000 wwn = 0.9060000 lint = 6.3891300e-08 
++ll = -2.3305548e-15 lw = -2.4634918e-15 lwl = 2.6243002e-24 
++wint = 3.5850000e-08 wl = -1.8902563e-15 ww = -1.3000000e-14 
++wwl = -1.3027796e-20 mobmod = 1 binunit = 2 
++xl = 1e-8+dxl_n33_rf xw = 0.00+dxw_n33_rf dwg = -3.9100000e-09 
++dwb = 3.2000000e-09 
+// * diode parameters
++dskip = no ldif = 6.50e-08 hdif = 2.05e-07 
++rsh = 7.08 rd = 0 rs = 0 
++rsc = rsc_n33_rf  rdc = rdc_n33_rf 
+// *
+// * threshold voltage parameters
+// *
++vth0 = 0.695+dvth_n33_rf lvth0 = 4.0100000e-10 wvth0 = 1.0200000e-08 
++pvth0 = 8.0000000e-16+dpvth0_n33_rf k1 = 0.8451000 lk1 = 5.8182560e-10 
++wk1 = -6.2456240e-09 pk1 = 1.9938927e-15 k2 = 4.4575000e-02 
++k3 = -3.8500000 dvt0 = 9.4991400 ldvt0 = 8.0839730e-09 
++dvt1 = 0.6300000 ldvt1 = 5.5000000e-08 dvt2 = -0.1450000 
++dvt0w = 0.00 dvt1w = 0.1057000 dvt2w = 0.00 
++nlx = 2.0274594e-07 lnlx = -2.8608589e-14 w0 = 0.00 
++k3b = 0.5669292 ngate = 2.6812141e+21 
+// *
+// * mobility parameters
+// *
++vsat = 8.5000000e+04 lvsat = -1.7300000e-03 pvsat = 1.2000000e-10 
++ua = -8.6001130e-10 ub = 2.3000001e-18 uc = 1.3100000e-10 
++puc = 5.0000000e-25 rdsw = 2.4208382e+02 prwb = -8.5000000e-02 
++prwg = 3.8000000e-02 wr = 1.0000000 u0 = 3.5000000e-02 
++lu0 = 5.0000000e-10 a0 = 1.0200000 la0 = -1.2000000e-07 
++keta = 0.00 lketa = -1.4000000e-08 wketa = -1.9999999e-09 
++pketa = 1.0000000e-15 a1 = 0.00 a2 = 0.9900000 
++ags = 0.1700000 b0 = 1.0000000e-08 b1 = 0.00 
+// *
+// * subthreshold current parameters
+// *
++voff = -0.1200000 nfactor = 1.1000000 lnfactor = 4.0000000e-08 
++pnfactor = -1.4000000e-14 cit = 1.0000000e-04 cdsc = 5.0000000e-04 
++cdscb = 0.00 cdscd = 0.00 eta0 = 4.0000000e-02 
++peta0 = 3.0000001e-16 etab = -0.1000000 dsub = 0.6000000 
+// *
+// * rout parameters
+// *
++pclm = 0.8000000 lpclm = 5.0000000e-08 ppclm = 8.0000000e-15 
++pdiblc1 = 9.0000000e-02 pdiblc2 = 1.6000000e-03 ppdiblc2 = -7.0000000e-17 
++pdiblcb = 0.00 drout = 0.5987002 pscbe1 = 3.4000000e+08 
++lpscbe1 = 13.0000000 pscbe2 = 3.8000000e-06 pvag = 0.00 
++delta = 1.0000000e-02 alpha0 = -4.4760000e-08 alpha1 = 0.8998877 
++beta0 = 18.8771250 lbeta0 = -5.7118000e-07 
+// *
+// * temperature effects parameters
+// *
++kt1 = -0.3250000 pkt1 = -2.3708420e-15 kt2 = -3.6844640e-02 
++at = 2.2000000e+04 ute = -1.4100000 ua1 = 2.0599999e-09 
++wua1 = -1.2600000e-16 pua1 = -1.0000000e-24 ub1 = -2.5000000e-18 
++wub1 = 1.1000000e-25 uc1 = -1.1000000e-10 luc1 = 1.6999999e-17 
++kt1l = -5.0000000e-09 prt = 40.0000000 
+// *
+// *
+// * capacitance parameters
+// *
++cj = cj_n33_rf  mj = 0.321 pb = 0.708 
++cjsw = cjsw_n33_rf   mjsw = 0.447 pbsw = 1 
++cjswg = 0 mjswg = 0.447 pbswg = 1 
++tpb = 0.00166 tpbsw = 0.00162 tpbswg = 0.00162 
++tcj = 0.000897 tcjsw = 0.000695 tcjswg = 0.000695 
++js = 3.65e-07 jsw = 3.0e-13 n = 1.04 
++xti = 3.9 nqsmod = 0 elm = 5 
++cgdo = cgdo_n33_rf cgso = cgso_n33_rf   cgbo = 0  tlevc = 1 
++capmod = 3 xpart = 1 cf = 0.00 
++acde = 0.45 moin = 24 noff = 2.3177 
++dlc = 6.50e-08 
+// *
+// * noise parameters
+// *
++noimod = 2 noia = 1.5500E+20 noib = 7.1866E+04 
++noic = 1.4952E-13 em = 3.2163E+07 ef = 9.9600E-01 
+// *
+}
+// * junction diode model
+model ndio33_rf diode
++is = 3.65e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1e-15 
++n = 1.0203 ns = 1.0203 rs = 8.84e-09 ik = 1.33e+05 ikp = 3.64e-04 
++bv = 11.0 ibv = 277.78 
++trs = 1.07e-03 eg = 1.16 tnom = 25.0 
++xti = 3.0 cjo = 0.000845  mj = 0.321 
++vj = 0.708 cjsw = 3.41e-10   mjsw = 0.447 
++vjsw = 1 cta = 0.000897 ctp = 0.000695 
++pta = 0.00166 ptp = 0.00162 tlev = 1 
++tlevc = 1 fc = 0 
+// * DNW junction diode model
+model diobpw_rf diode
++level = 1 is = 1.50e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1.00e-15 
++n = 1.0213 ns = 1.0213 rs = 2.51e-08 ik = 2.40e+05 ikp = 1.60E-03 
++bv = 15.0 ibv = 1.04e+02 
++trs = 1.77e-03 cta = 0.0012 ctp = 0.00107 
++eg = 1.16 tnom = 25.0 pta = 0.0019 
++ptp = 0.00193 xti = 3.0 cjo = 0.000536 
++mj = 0.343 vj = 0.693 cjsw = 3.22e-10 
++mjsw = 0.361 vjsw = 0.715 tlev = 1 
++tlevc = 1 area = 9.6e-9 perim = 4e-4 
++fc = 0 
+ends dnw33_ckt_rf
+//*************************
+//* 3.3V RF PMOS Subcircuit
+//*************************
+//* 1=drain, 2=gate, 3=source, 4=bulk
+//* lr=gate length, wr=finger width, nf=finger number
+subckt p33_ckt_rf (1 2 3 4) 
+//* scalable unit parameter
+//* euqivalent circuit saclable parameter
+parameters lr=0.3u wr=10u nf=2
++Cgdo_p33     =max((0+DCGDO_P33_RF),0)
++Cgso_p33     =max((0+DCGSO_P33_RF),0)
++Rdc_p33      =max((300/(wr*1e6)), 1e-3)
++Rsc_p33      =max((300/(wr*1e6)), 1e-3)
++Cj_p33       =max((0+dcj_p33_rf), 0)
++Cjsw_p33     =max((0+dcjsw_p33_rf), 0)
+//*****************************************
+lgate       (2 20)  inductor   l=1p
+rgate       (20 21) resistor   r=max(((-0.1307*pwr(lr*1e6,2)-0.1679*lr*1e6+0.3067)*pwr(wr*1e6,2)+(-1.5879*pwr(lr*1e6,2)+6.3308*lr*1e6-4.3942)*wr*1e6+(0.1019*pwr(lr*1e6,2)-17.347*lr*1e6+14.299))+((-110.36*pwr(lr*1e6,2)+173.06*lr*1e6-51.853)*pwr(wr*1e6,2)+(1223.8*pwr(lr*1e6,2)-1968.5*lr*1e6+557.24)*wr*1e6+(-988.57*pwr(lr*1e6,2)+2030.6*lr*1e6-114))/NF,1e-3)
+cgd_ext     (20 11) capacitor  c=max((((0.0069*pwr(lr*1e6,2)-0.006*lr*1e6+0.0012)*pwr(wr*1e6,2)+(-0.05*pwr(lr*1e6,2)+0.0436*lr*1e6-0.0084)*wr*1e6+(0.0294*pwr(lr*1e6,2)-0.0285*lr*1e6+0.006))*Pwr(nf,2)+((-0.1241*pwr(lr*1e6,2)+0.1438*lr*1e6-0.0334)*pwr(wr*1e6,2)+(0.9454*pwr(lr*1e6,2)-1.0343*lr*1e6+0.5294)*wr*1e6+(-1.2623*pwr(lr*1e6,2)+1.5818*lr*1e6-0.085))*NF+((0.7611*pwr(lr*1e6,2)-1.0199*lr*1e6+0.2764)*pwr(wr*1e6,2)+(-7.3404*pwr(lr*1e6,2)+9.8018*lr*1e6-2.568)*wr*1e6+(10.408*pwr(lr*1e6,2)-14.261*lr*1e6+4.2573)))*1e-15,1e-18)
+cgs_ext     (20 31) capacitor  c=max((((-0.0556*pwr(lr*1e6,2)+0.072*lr*1e6-0.0164)*pwr(wr*1e6,2)+(0.3886*pwr(lr*1e6,2)-0.5059*lr*1e6+0.1173)*wr*1e6+(-0.563*pwr(lr*1e6,2)+0.7329*lr*1e6-0.1699))*Pwr(nf,2)+((0.3657*pwr(lr*1e6,2)-0.4886*lr*1e6+0.1229)*pwr(wr*1e6,2)+(-3.0209*pwr(lr*1e6,2)+3.4127*lr*1e6-0.6043)*wr*1e6+(6.3133*pwr(lr*1e6,2)-8.2461*lr*1e6+2.374))*NF+((-0.777*pwr(lr*1e6,2)+1.1371*lr*1e6-0.3601)*pwr(wr*1e6,2)+(2.2591*pwr(lr*1e6,2)-7.4763*lr*1e6+3.6663)*wr*1e6+(-6.6803*pwr(lr*1e6,2)+14.463*lr*1e6-3.2627)))*1e-15,1e-18)
+cds_ext     (15 31) capacitor  c=max((((-0.0344*pwr(lr*1e6,2)+0.0349*lr*1e6-0.0075)*pwr(wr*1e6,2)+(0.3513*pwr(lr*1e6,2)-0.3435*lr*1e6+0.0732)*wr*1e6+(-0.5587*pwr(lr*1e6,2)+0.541*lr*1e6-0.115))*Pwr(nf,2)+((0.469*pwr(lr*1e6,2)-0.4217*lr*1e6+0.0652)*pwr(wr*1e6,2)+(-5.422*pwr(lr*1e6,2)+4.6966*lr*1e6-0.2819)*wr*1e6+(8.8347*pwr(lr*1e6,2)-8.0843*lr*1e6+1.5796))*NF+((-0.708*pwr(lr*1e6,2)+0.2244*lr*1e6+0.1665)*pwr(wr*1e6,2)+(9.9669*pwr(lr*1e6,2)-5.1155*lr*1e6-0.9422)*wr*1e6+(-16.183*pwr(lr*1e6,2)+9.5447*lr*1e6+1.0176)))*1e-15,1e-18)
+rds         (11 15) resistor   r=max(((375.75*pwr(lr*1e6,2)-603.31*lr*1e6+131.78)*pwr(wr*1e6,2)+(-4158.8*pwr(lr*1e6,2)+6647.4*lr*1e6-1413.4)*wr*1e6+(5776.5*pwr(lr*1e6,2)-7973.7*lr*1e6+1834.2))*pwr(nf,(-0.085*pwr(lr*1e6,2)+0.1295*lr*1e6-0.0224)*pwr(wr*1e6,2)+(0.7499*pwr(lr*1e6,2)-1.2094*lr*1e6+0.1621)*wr*1e6+(-0.859*pwr(lr*1e6,2)+1.1497*lr*1e6-0.4753)), 1e-3)
+ldrain      (1 11)  inductor   l=1p
+lsource     (3 31)  inductor   l=1p
+//*****************************************
+djdb (11 12) pdio33_rf area=(nf/2*wr*1e6*(0.8-2*0.065))*1e-12  pj=(0.99997+1.8823e-7/wr*1e6)*nf*wr
+djsb (31 32) pdio33_rf area=(wr*1e6*(0.8-0.065)*2+(nf/2-1)*wr*1e6*(0.8-2*0.065))*1e-12  pj=(0.99997+1.8823e-7/wr*1e6)*nf*wr
+//*****************************************
+rsub1      (41  4)  resistor   r=3
+rsub2      (41  12) resistor   r=max(((942147*pwr(lr*1e6,2)-1000000*lr*1e6+466678)*pwr(wr*1e6,2)+(-2000000*pwr(lr*1e6,2)+4000000*lr*1e6-1000000)*wr*1e6+(1000000*pwr(lr*1e6,2)-2000000*lr*1e6+873325))*pwr(nf,(-0.2537*pwr(lr*1e6,2)+0.354*lr*1e6-0.0821)*pwr(wr*1e6,2)+(1.3061*pwr(lr*1e6,2)-1.8324*lr*1e6+0.1598)*wr*1e6+(-1.0001*pwr(lr*1e6,2)+1.4236*lr*1e6-0.2592)), 1e-3)
+rsub3      (41  32) resistor   r=max(((942147*pwr(lr*1e6,2)-1000000*lr*1e6+466678)*pwr(wr*1e6,2)+(-2000000*pwr(lr*1e6,2)+4000000*lr*1e6-1000000)*wr*1e6+(1000000*pwr(lr*1e6,2)-2000000*lr*1e6+873325))*pwr(nf,(-0.2537*pwr(lr*1e6,2)+0.354*lr*1e6-0.0821)*pwr(wr*1e6,2)+(1.3061*pwr(lr*1e6,2)-1.8324*lr*1e6+0.1598)*wr*1e6+(-1.0001*pwr(lr*1e6,2)+1.4236*lr*1e6-0.2592)), 1e-3)
+//* --------- ideal mos transistor ----------------------
+main (11 21 31 41) p33_rf l=lr w=wr m=nf ad = 0 as = 0 pd = 0 ps = 0
+// * mos model
+simulator lang=spectre  insensitive=yes
+model p33_rf bsim3v3 {
+1: type=p
+// * general parameters
+// *
++lmin = 2.8e-7 lmax = 1.2e-6 wmin = 4.8e-7 
++wmax = 1.002e-5 tnom = 25.0 version = 3.24 
++tox =(6.62e-09+DTOX_P33_RF) toxm = 6.62e-09 xj = 1.7000001e-07 
++nch = 5.4852000e+17 lln = 1.0471729 lwn = 0.9530895 
++wln = 1.0257638 wwn = 0.9617700 lint = 3.5000000e-08 
++ll = 5.5000000e-15 lw = -4.7160380e-14 lwl = 7.0054450e-22 
++wint = 1.3000000e-08 wl = -3.1491245e-14 ww = 2.3000000e-15 
++wwl = -2.4167156e-22 mobmod = 1 binunit = 2 
++xl =(-1.70e-08+DXL_P33_RF) xw =(0+DXW_P33_RF) dwg = 0.00 
++dwb = 8.6000000e-09 
+// * diode parameters
++dskip = no ldif = 6.50e-08 hdif = 2.05e-07 
++rsh = 9.8 rd = 0 rs = 0 
++rsc      =(rsc_p33)           rdc      =(rdc_p33)
+// *
+// * threshold voltage parameters
+// *
++vth0 =(-0.672+DVTH_P33_RF) wvth0 = 4.0000000e-09 pvth0 =(6.0000000e-15+DPVTH0_P33_RF) 
++k1 = 0.9145741 pk1 = -1.7000000e-14 k2 = 4.1276220e-02 
++k3 = 0.1293833 dvt0 = 1.8000000 dvt1 = 0.7100000 
++dvt2 = -7.0000000e-02 dvt0w = 0.00 dvt1w = 0.00 
++dvt2w = 0.00 nlx = 1.2000000e-08 w0 = 1.0021131e-09 
++k3b = 0.4000000 ngate = 1.1600000e+20 
+// *
+// * mobility parameters
+// *
++vsat = 8.5500000e+04 pvsat = -5.8000000e-09 ua = 3.1500000e-10 
++lua = 1.5000001e-17 wua = -1.6763224e-16 pua = -1.1000000e-23 
++ub = 1.0444180e-18 lub = -7.0000000e-27 uc = -3.5000000e-11 
++luc = 4.0000000e-18 puc = 5.0000000e-24 rdsw = 9.5000000e+02 
++prwb = 0.00 prwg = 6.3755660e-03 wr = 1.0000000 
++u0 = 9.2500000e-03 lu0 = -4.1500680e-10 wu0 = -1.7001526e-12 
++pu0 = -3.7999640e-16 a0 = 0.8500000 keta = 1.5000000e-02 
++lketa = -1.0000000e-08 wketa = 1.0000000e-09 pketa = -6.0000000e-15 
++a1 = 0.00 a2 = 0.9900000 ags = 4.0000000e-02 
++b0 = 4.6000000e-08 b1 = 0.00 
+// *
+// * subthreshold current parameters
+// *
++voff = -0.1000000 lvoff = 1.8000000e-09 pvoff = -2.9999999e-15 
++nfactor = 1.1000000 pnfactor = -4.0000000e-14 cit = 1.9999999e-04 
++cdsc = 4.5263850e-05 cdscb = 0.00 cdscd = 0.00 
++eta0 = 5.0000000e-03 peta0 = 7.0000000e-15 etab = -1.5000000e-02 
++petab = -2.0000000e-15 dsub = 0.5800000 
+// *
+// * rout parameters
+// *
++pclm = 0.6000000 ppclm = 1.3000000e-13 pdiblc1 = 6.0000000e-03 
++pdiblc2 = 2.5000001e-04 wpdiblc2 = 8.0000000e-11 pdiblcb = 0.00 
++drout = 0.5600000 pscbe1 = 3.3000000e+08 ppscbe1 = -7.0000000e-06 
++pscbe2 = 2.0000000e-07 pvag = 0.00 delta = 8.0000000e-03 
++pdelta = 4.0000000e-16 alpha0 = 1.3410400e-06 alpha1 = 5.6136910e-02 
++beta0 = 27.5998000 
+// *
+// * temperature effects parameters
+// *
++kt1 = -0.3840900 wkt1 = -9.4333370e-10 pkt1 = 4.9999980e-15 
++kt2 = -4.1563480e-02 at = -2.0000000e+03 pat = -7.5000000e-09 
++ute = -1.3236057 ua1 = 3.0000002e-10 wua1 = 8.0000000e-18 
++pua1 = 1.0000000e-23 ub1 = -2.0704662e-18 wub1 = 1.4000000e-25 
++uc1 = -5.0000000e-11 kt1l = -6.0000000e-09 prt = 1.3000000e+02 
+// *
+// * capacitance parameters
+// *
++cj =(Cj_p33) mj = 0.401 pb = 0.807 
++cjsw =(Cjsw_p33) mjsw = 0.45 pbsw = 1 
++cjswg = 0 mjswg = 0.45 pbswg = 1 
++tpb = 0.00157 tpbsw = 0.00137 tpbswg = 0.00137 
++tcj = 0.000883 tcjsw = 0.000709 tcjswg = 0.000709 
++js = 1.68e-07 jsw = 4.0e-13 n = 1.07 
++xti = 3.0 nqsmod = 0 elm = 5 
++cgdo =(Cgdo_p33) cgso =(Cgso_p33) tlevc = 1 cgbo=0
++capmod = 3 xpart = 1 cf = 0.00 
++acde = 0.55 moin = 15 noff = 0.565 
++dlc = 7.0e-09 dwc = 6.0e-8 
+// *
+// * noise parameters
+// *
++noimod = 2 noia = 3.5911E+19 noib = 3.0215E+03 
++noic = 6.7064E-12 em = 4.2400E+07 ef = 1.0829E+00 
+// *
+}                                                                                      
+// * junction diode model                                                              
+model pdio33_rf diode                                                                  
++is = 1.68e-07 allow_scaling = yes dskip = no imax=1e20 isw = 1e-15                    
++n = 1.0143 ns = 1.0143 rs = 0 ik = 4.07e+05 ikp = 2.42e-03                               
++bv = 11.0 ibv = 277.78                                                                
++trs = 1.24e-03 eg = 1.16 tnom = 25.0                                                  
++xti = 3.0 cjo = 0.00101  mj = 0.401                                                   
++vj = 0.807 cjsw = 8.96E-11 mjsw = 0.45                                                
++vjsw = 1 cta = 0.000883 ctp = 0.000709                                                
++pta = 0.00157 ptp = 0.00137 tlev = 1                                                  
++tlevc = 1 fc = 0                                                                      
+ends p33_ckt_rf                                                                        
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       

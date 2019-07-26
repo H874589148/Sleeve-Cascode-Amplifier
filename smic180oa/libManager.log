@@ -1,0 +1,18 @@
+\o Program:		@(#)$CDS: libManager version 6.1.6 - CAT33 02/20/2013 14:27 (sjfnl893) $
+\o Sub version:		sub-version  p011 
+\o Arguments:		-unmapped -mpssession virtuoso11239 -mpshost mgt 
+\o Working Directory:	mgt:/yjs1/TeamChenLin/huangdi/smic180oa
+\o 64-bit offsets
+\o Qt version: 		4.7.2
+\o changeWorkingDir("/yjs1/TeamChenLin/huangdi/smic180oa") unnecessary.
+\o ddSetForcedLib("") unnecessary.
+\o Log file is "/yjs1/TeamChenLin/huangdi/smic180oa/libManager.log".
+\o Opening libManager window.
+\a nrSetWindowVisibility(cdsLibManager "show")
+\o MPS service: map window
+\a nrSetCurrentWindow(cdsLibManager)
+\o Library Manager customization server connected.
+\a nrResizeWindow(cdsLibManager list(430 44 1363 704))
+\a nrSetWindowVisibility(cdsLibManager "hide")
+\o libManager is exiting.
+\a exit(0)

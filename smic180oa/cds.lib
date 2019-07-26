@@ -1,0 +1,2 @@
+DEFINE cdsDefTechLib /soft1/cadence/IC616/tools/dfII/etc/cdsDefTechLib
+DEFINE smic18mmrf ./smic18mmrf
