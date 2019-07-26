@@ -1,0 +1,9 @@
+approaching
+finish                未使用电压源
+sleeve                第一次结束，相位裕度不达标
+sleeve++              指标均达标，尺寸不为整数
+sleeveCascode         降低尺寸，300u
+sleeveCASsimulation   调整尺寸为整数，但是尺寸过大500u
+vdc-finish            替换电压源
+z1.0                  再次降低尺寸，300u
+z1.5                  替换电压源为电阻
